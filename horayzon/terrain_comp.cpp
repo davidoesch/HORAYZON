@@ -44,8 +44,6 @@ RTCDevice initializeDevice() {
 // Create scene from geometries
 //#############################################################################
 
-struct Triangle { unsigned int v0, v1, v2; };
-
 RTCScene initializeSceneFromRaster(
 	RTCDevice device,
 	float* vertices_mesh,
@@ -54,10 +52,10 @@ RTCScene initializeSceneFromRaster(
 )
 {
 
-	int num_vert = (raster_size_y * raster_size_x);
 	cout << "Raster dimensions: (" << raster_size_y
 		<< ", " << raster_size_x << ") " << endl;
-	cout << "Number of vertices: " << num_vert << endl;
+	size_t num_vertices = (raster_size_y * raster_size_x);
+	cout << "Number of vertices: " << num_vertices << endl;
 
 	RTCScene scene = rtcNewScene(device);
   	rtcSetSceneFlags(scene, RTC_SCENE_FLAG_ROBUST);
@@ -71,7 +69,7 @@ RTCScene initializeSceneFromRaster(
 		vertices_mesh,
 		0,
 		3 * sizeof(float),
-		num_vert
+		num_vertices
 	);
 
 	RTCGrid* grid = (RTCGrid*)rtcSetNewGeometryBuffer(
@@ -95,7 +93,7 @@ RTCScene initializeSceneFromRaster(
 	rtcCommitScene(scene);
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> time = end - start;
-	cout << "BVH build time: " << fixed << setprecision(1)
+	cout << "BVH build time: " << fixed << setprecision(2)
 		<< time.count() << " s" << endl;
 
 	return scene;
@@ -106,10 +104,13 @@ RTCScene initializeSceneFromTriangles(
 	RTCDevice device,
 	float* vertices_mesh,
 	unsigned int* faces_mesh,
-	int num_vertices,
-	int num_faces
+	unsigned int num_vertices,
+	unsigned int num_faces
 )
 {
+
+	cout << "Number of vertices: " << num_vertices << endl;
+	cout << "Number of faces: " << num_faces << endl;
 
 	RTCScene scene = rtcNewScene(device);
 	rtcSetSceneFlags(scene, RTC_SCENE_FLAG_ROBUST);
@@ -146,7 +147,7 @@ RTCScene initializeSceneFromTriangles(
 	rtcCommitScene(scene);
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> time = end - start;
-	cout << "BVH build time: " << fixed << setprecision(1)
+	cout << "BVH build time: " << fixed << setprecision(2)
 		<< time.count() << " s" << endl;
 
 	return scene;
@@ -193,7 +194,7 @@ void CppTerrain::from_raster_mesh(
 
 	auto end_ini = std::chrono::high_resolution_clock::now();
   	std::chrono::duration<double> time = end_ini - start_ini;
-	cout << "Total initialisation time: " << fixed << setprecision(1)
+	cout << "Total initialisation time: " << fixed << setprecision(2)
 		<< time.count() << " s" << endl;
 
 }
@@ -201,8 +202,8 @@ void CppTerrain::from_raster_mesh(
 void CppTerrain::from_triangle_mesh(
 	float* vertices_mesh,
     unsigned int* faces_mesh,
-	int num_vertices,
-	int num_faces
+	unsigned int num_vertices,
+	unsigned int num_faces
 )
 {
 
@@ -223,7 +224,7 @@ void CppTerrain::from_triangle_mesh(
 
 	auto end_ini = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> time = end_ini - start_ini;
-	cout << "Total initialisation time: " << fixed << setprecision(1)
+	cout << "Total initialisation time: " << fixed << setprecision(2)
 		<< time.count() << " s" << endl;
 
 }

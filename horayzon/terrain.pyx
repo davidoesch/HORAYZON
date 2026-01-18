@@ -14,8 +14,8 @@ cdef extern from "terrain_comp.h" namespace "shapes":
         void from_triangle_mesh(
             float*,
             np.npy_uint32*,
-            int,
-            int
+            np.npy_uint32,
+            np.npy_uint32
         )
 
 cdef class Terrain:
@@ -40,10 +40,9 @@ cdef class Terrain:
         Parameters
         ----------
         vertices_mesh : ndarray of float (two-dimensional)
-            Elevation at vertices of raster mesh
+            Elevation at vertices of raster mesh. Raster vertices must be
+            arranged in row-major order
             (number of vertices, 3) [metre]
-            # --------> more information about 2D layout -------------------------->  (y, x), column-major???
-            [metre]
         raster_size_y : int
             Raster size in y-direction (number of rows; height)
         raster_size_x : int
@@ -99,8 +98,8 @@ cdef class Terrain:
         if (vertices_mesh.nbytes / (10 ** 9)) > 16.0:
             raise MemoryError("Vertex buffer exceeds 16 GB")
 
-        cdef int num_vertices = vertices_mesh.shape[0]
-        cdef int num_faces = faces_mesh.shape[0]
+        cdef unsigned int num_vertices = vertices_mesh.shape[0]
+        cdef unsigned int num_faces = faces_mesh.shape[0]
 
         self.thisptr.from_triangle_mesh(
             &vertices_mesh[0, 0],

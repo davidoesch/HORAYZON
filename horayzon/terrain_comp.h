@@ -10,8 +10,8 @@ public:
     int raster_size_y_cl;
     int raster_size_x_cl;
     unsigned int* faces_mesh_cl;
-    int num_vertices_cl;
-    int num_faces_cl;
+    unsigned int num_vertices_cl;
+    unsigned int num_faces_cl;
 
     CppTerrain();
     ~CppTerrain();
@@ -25,8 +25,8 @@ public:
     void from_triangle_mesh(
         float* vertices_mesh,
         unsigned int* faces_mesh,
-        int num_vertices,
-        int num_faces
+        unsigned int num_vertices,
+        unsigned int num_faces
     );
 
 };
