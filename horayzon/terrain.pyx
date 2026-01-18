@@ -35,7 +35,7 @@ cdef class Terrain:
         int raster_size_x
     ):
         """
-        Initialise terrain with elevation data on a raster/grid.
+        Initialise terrain from raster/grid elevation data.
 
         Parameters
         ----------
@@ -74,7 +74,7 @@ cdef class Terrain:
         np.ndarray[np.uint32_t, ndim = 2] faces_mesh,
     ):
         """
-        Initialise terrain with elevation data on a raster/grid.
+        Initialise terrain from triangle mesh elevation data.
 
         Parameters
         ----------
@@ -88,13 +88,13 @@ cdef class Terrain:
 
         # Check consistency and validity of input arguments
         if (vertices_mesh.shape[1] != 3) or (faces_mesh.shape[1] != 3):
-            raise ValueError("Second dimension length of input arrays "
+            raise ValueError("Length of second dimensions of input arrays "
                 "must be 3")
         if ((not vertices_mesh.flags["C_CONTIGUOUS"])
             or (not faces_mesh.flags["C_CONTIGUOUS"])):
             raise ValueError("Input arrays must be C-contiguous")
         if ((faces_mesh.min() < 0)
-            or (faces_mesh.max() >= (vertices_mesh.size // 3))):
+            or (faces_mesh.max() >= vertices_mesh.shape[0])):
             raise ValueError("Face indices out of bounds")
         if (vertices_mesh.nbytes / (10 ** 9)) > 16.0:
             raise MemoryError("Vertex buffer exceeds 16 GB")
