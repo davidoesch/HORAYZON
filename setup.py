@@ -37,8 +37,8 @@ extra_objects_cpp = [path_lib_conda + i + lib_end for i in ["libembree4"]]
 os.environ["CC"] = compiler
 
 setup(ext_modules=cythonize(Extension(
-           "horizon_svf",
-           sources=["horayzon/shadow.pyx", "horayzon/shadow_comp.cpp"],
+           "terrain",
+           sources=["horayzon/terrain.pyx", "horayzon/terrain_comp.cpp"],
            include_dirs=include_dirs_cpp,
            extra_objects=extra_objects_cpp,
            extra_compile_args=extra_compile_args,
