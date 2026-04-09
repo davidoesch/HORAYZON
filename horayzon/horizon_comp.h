@@ -14,7 +14,7 @@ void horizon_gridded_comp(float* vert_grid,
 	int azim_num, float dist_search,
 	float hori_acc, char* ray_algorithm, char* geom_type,
 	float* vert_simp, int num_vert_simp,
-	int* tri_ind_simp, int num_tri_simp,
+	long* tri_ind_simp, int num_tri_simp,
     float elev_ang_low_lim,
     uint8_t* mask, float hori_fill,
     float ray_org_elev);

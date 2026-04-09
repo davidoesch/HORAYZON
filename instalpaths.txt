@@ -1,0 +1,13 @@
+C:\Program Files (x86)\embree\embree-4.4.1.x64.windows
+C:\Program Files (x86)\tbb\oneapi-tbb-2022.3.0
+
+import os
+
+# Explicitly tell Python 3.8+ where the DLLs live
+os.add_dll_directory(r"C:\Program Files (x86)\embree\embree-4.4.1.x64.windows\bin")
+
+# Note: Check if your TBB dlls are in 'redist' or 'bin' inside the vc14 folder
+os.add_dll_directory(r"C:\Program Files (x86)\tbb\oneapi-tbb-2022.3.0\redist\intel64\vc14") 
+
+# Now the import will work
+import horayzon

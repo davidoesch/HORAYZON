@@ -33,11 +33,6 @@ path_lib = [
     r"C:\Program Files (x86)\embree\embree-4.4.1.x64.windows\lib\embree4",
     r"C:\Program Files (x86)\tbb\oneapi-tbb-2022.3.0\lib\intel64\vc14\tbb12"
 ]
-# Add this line to force the Windows library extension:
-# Windows specific variables
-lib_end = ".lib"
-extra_compile_args_cpp = ['/O2', '/EHsc']
-extra_link_args_cpp = []
 
 # - depending on defined library paths and loaded modules, it might be
 #   necessary to add paths to further libraries like 'libimf' and 'libtbb'
@@ -66,8 +61,7 @@ elif sys.platform in ["win32"]:
 else:
     raise ValueError("Unsupported operating system")
 extra_compile_args_cython = ["-O3", "-ffast-math"]
-#libraries_cython = ["m", "pthread"]
-libraries_cython = []
+libraries_cython = ["m", "pthread"]
 include_dirs_cpp = [np.get_include()] + path_include
 extra_objects_cpp = [i + lib_end for i in path_lib]
 

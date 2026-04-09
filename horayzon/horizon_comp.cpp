@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <embree4/rtcore.h>
 #include <stdio.h>
+#define _USE_MATH_DEFINES 
 #include <math.h>
 #include <limits>
 #include <stdio.h>
@@ -635,7 +636,7 @@ void horizon_gridded_comp(float* vert_grid,
 	int azim_num, float dist_search,
 	float hori_acc, char* ray_algorithm, char* geom_type,
 	float* vert_simp, int num_vert_simp,
-	int* tri_ind_simp, int num_tri_simp,
+	long* tri_ind_simp, int num_tri_simp,
 	float elev_ang_low_lim,
 	uint8_t* mask, float hori_fill,
 	float ray_org_elev) {
@@ -652,7 +653,7 @@ void horizon_gridded_comp(float* vert_grid,
 
   	RTCDevice device = initializeDevice();
   	RTCScene scene = initializeScene(device, vert_grid, dem_dim_0, dem_dim_1,
-  		geom_type, vert_simp, num_vert_simp, tri_ind_simp, num_tri_simp);
+  		geom_type, vert_simp, num_vert_simp, (int*)tri_ind_simp, num_tri_simp);
 
   	// Query properties of device
   	// bool cullingEnabled = rtcGetDeviceProperty(device,
@@ -707,9 +708,9 @@ void horizon_gridded_comp(float* vert_grid,
   	// Allocate and initialise arrays with evaluated trigonometric functions
 	// ------------------------------------------------------------------------
 
-	// Azimuth angles (allocate on stack)
-	float azim_sin[azim_num];
-	float azim_cos[azim_num];
+	// Azimuth angles (allocate on heap)
+	float* azim_sin = new float[azim_num];
+	float* azim_cos = new float[azim_num];
 	float ang;
 	for (int i = 0; i < azim_num; i++) {
 		ang = ((2 * M_PI) / azim_num * i);
@@ -717,12 +718,12 @@ void horizon_gridded_comp(float* vert_grid,
 		azim_cos[i] = cos(ang);
 	}
 
-	// Elevation angles (allocate on stack)
+	// Elevation angles (allocate on heap)
 	int elev_num = ((int)ceil((elev_ang_up_lim - elev_ang_low_lim)
 		/ (hori_acc / 5.0)) + 1);
-	float elev_ang[elev_num];
-	float elev_sin[elev_num];
-	float elev_cos[elev_num];
+	float* elev_ang = new float[elev_num];
+	float* elev_sin = new float[elev_num];
+	float* elev_cos = new float[elev_num];
 	for (int i = 0; i < elev_num; i++) {
 		ang = elev_ang_up_lim - (hori_acc / 5.0) * i;
 		elev_ang[elev_num - i - 1] = ang;
@@ -818,7 +819,13 @@ void horizon_gridded_comp(float* vert_grid,
   	cout << "Total run time: " << time.count() << " s" << endl;
 
 	cout << "--------------------------------------------------------" << endl;
- 
+
+	// Free the allocated arrays
+	delete[] azim_sin;
+	delete[] azim_cos;
+	delete[] elev_ang;
+	delete[] elev_sin;
+	delete[] elev_cos; 
 }
 
 //#############################################################################
@@ -856,7 +863,7 @@ void horizon_locations_comp(float* vert_grid,
 
   	RTCDevice device = initializeDevice();
   	RTCScene scene = initializeScene(device, vert_grid, dem_dim_0, dem_dim_1,
-  		geom_type, vert_simp, num_vert_simp, tri_ind_simp, num_tri_simp);
+  		geom_type, vert_simp, num_vert_simp, (int*)tri_ind_simp, num_tri_simp);
 
   	auto end_ini = std::chrono::high_resolution_clock::now();
   	std::chrono::duration<double> time = end_ini - start_ini;
@@ -879,9 +886,9 @@ void horizon_locations_comp(float* vert_grid,
   	// Allocate and initialise arrays with evaluated trigonometric functions
 	// ------------------------------------------------------------------------
 
-	// Azimuth angles (allocate on stack)
-	float azim_sin[azim_num];
-	float azim_cos[azim_num];
+	// Azimuth angles (allocate on heap)
+	float* azim_sin = new float[azim_num];
+	float* azim_cos = new float[azim_num];
 	float ang;
 	for (int i = 0; i < azim_num; i++) {
 		ang = ((2 * M_PI) / azim_num * i);
@@ -889,12 +896,12 @@ void horizon_locations_comp(float* vert_grid,
 		azim_cos[i] = cos(ang);
 	}
 
-	// Elevation angles (allocate on stack)
+	// Elevation angles (allocate on heap)
 	int elev_num = ((int)ceil((elev_ang_up_lim - elev_ang_low_lim)
 		/ (hori_acc / 5.0)) + 1);
-	float elev_ang[elev_num];
-	float elev_sin[elev_num];
-	float elev_cos[elev_num];
+	float* elev_ang = new float[elev_num];
+	float* elev_sin = new float[elev_num];
+	float* elev_cos = new float[elev_num];
 	for (int i = 0; i < elev_num; i++) {
 		ang = elev_ang_up_lim - (hori_acc / 5.0) * i;
 		elev_ang[elev_num - i - 1] = ang;
@@ -1090,5 +1097,10 @@ void horizon_locations_comp(float* vert_grid,
   	cout << "Total run time: " << time.count() << " s" << endl;
 
 	cout << "--------------------------------------------------------" << endl;
- 
+ // Free the allocated arrays
+	delete[] azim_sin;
+	delete[] azim_cos;
+	delete[] elev_ang;
+	delete[] elev_sin;
+	delete[] elev_cos;
 }
