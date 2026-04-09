@@ -11,6 +11,7 @@ Prerequisites
 1.  **Python 3.11+** (We recommend creating a virtual environment: `python -m venv .venv`).
 
 2.  **Microsoft C++ Build Tools:** Download and install the [Visual Studio Build Tools](https://www.google.com/search?q=https://visualstudio.microsoft.com/visual-cpp-build-tools/). Ensure "Desktop development with C++" is checked.
+![alt text](image-1.png)
 
 3.  **Intel Embree:** Download the Windows binary release (e.g., v4.4.1) and extract it to eg `C:\Program Files (x86)\embree\embree-4.4.1.x64.windows`.
 
